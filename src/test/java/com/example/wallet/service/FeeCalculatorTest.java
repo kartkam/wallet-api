@@ -26,4 +26,10 @@ class FeeCalculatorTest {
     void roundsToCents() {
         assertThat(calculator.feeFor(new BigDecimal("2500.50"))).isEqualByComparingTo("12.50");
     }
+
+    @Test
+    void roundsHalfCentsUp() {
+        // 1003.00 * 0.005 is exactly 5.015, which must round up to 5.02
+        assertThat(calculator.feeFor(new BigDecimal("1003.00"))).isEqualByComparingTo("5.02");
+    }
 }
