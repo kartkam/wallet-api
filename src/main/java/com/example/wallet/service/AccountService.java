@@ -19,6 +19,8 @@ import com.example.wallet.repository.LedgerEntryRepository;
 @Service
 public class AccountService {
 
+    static final String SAME_ACCOUNT_MESSAGE = "Cannot transfer to the same account";
+
     private final AccountRepository accounts;
     private final LedgerEntryRepository ledger;
     private final Clock clock;
@@ -52,7 +54,7 @@ public class AccountService {
     public void transfer(Long fromAccountId, Long toAccountId, BigDecimal amount) {
         requirePositive(amount);
         if (fromAccountId.equals(toAccountId)) {
-            throw new InvalidRequestException("Cannot transfer to the same account");
+            throw new InvalidRequestException(SAME_ACCOUNT_MESSAGE);
         }
         Account from = load(fromAccountId);
         Account to = load(toAccountId);

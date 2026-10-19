@@ -104,7 +104,8 @@ class AccountServiceTest {
         service.deposit(usd.getId(), new BigDecimal("50.00"));
 
         assertThatThrownBy(() -> service.transfer(usd.getId(), usd.getId(), BigDecimal.ONE))
-                .isInstanceOf(InvalidRequestException.class);
+                .isInstanceOf(InvalidRequestException.class)
+                .hasMessage(AccountService.SAME_ACCOUNT_MESSAGE);
         assertThatThrownBy(() -> service.transfer(usd.getId(), eur.getId(), BigDecimal.ONE))
                 .isInstanceOf(InvalidRequestException.class);
     }
