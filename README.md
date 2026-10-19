@@ -15,6 +15,18 @@ This repository is a sandbox for evaluating AI pull-request reviews with [Codzee
 
 Errors are returned as RFC 9457 problem details: `404` unknown account, `400` invalid request, `409` insufficient funds or a concurrent update.
 
+### Reports
+
+Reporting endpoints are for operations staff and require an `X-Export-Key` header.
+
+| Method | Path | Description |
+|---|---|---|
+| `GET` | `/reports/daily-summary?date=2026-01-15` | Deposit and transfer counts and totals for one day |
+| `GET` | `/reports/totals-by-currency` | Sum of all balances per currency |
+| `GET` | `/reports/top-accounts?limit=10` | Accounts with the highest balances |
+| `GET` | `/reports/balances` | CSV export of every account balance |
+| `GET` | `/reports/ledger?from=2026-01-01&to=2026-01-31` | CSV export of ledger entries for a date range, both days included |
+
 ## Design notes
 
 - Balances are `BigDecimal` with a fixed scale of 4 and are never handled as floating point.
