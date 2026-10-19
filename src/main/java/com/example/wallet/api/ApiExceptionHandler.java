@@ -14,24 +14,29 @@ import com.example.wallet.error.InvalidRequestException;
 @RestControllerAdvice
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
+    static final String CONCURRENT_UPDATE_DETAIL = "The account was modified concurrently, please retry";
+
     @ExceptionHandler(AccountNotFoundException.class)
-    ProblemDetail notFound(AccountNotFoundException e) {
-        return ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage());
+    ProblemDetail handleAccountNotFound(AccountNotFoundException e) {
+        return problem(HttpStatus.NOT_FOUND, e.getMessage());
     }
 
     @ExceptionHandler(InsufficientFundsException.class)
-    ProblemDetail insufficientFunds(InsufficientFundsException e) {
-        return ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, e.getMessage());
+    ProblemDetail handleInsufficientFunds(InsufficientFundsException e) {
+        return problem(HttpStatus.CONFLICT, e.getMessage());
     }
 
     @ExceptionHandler(InvalidRequestException.class)
-    ProblemDetail invalidRequest(InvalidRequestException e) {
-        return ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, e.getMessage());
+    ProblemDetail handleInvalidRequest(InvalidRequestException e) {
+        return problem(HttpStatus.BAD_REQUEST, e.getMessage());
     }
 
     @ExceptionHandler(ObjectOptimisticLockingFailureException.class)
-    ProblemDetail concurrentUpdate(ObjectOptimisticLockingFailureException e) {
-        return ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT,
-                "The account was modified concurrently, please retry");
+    ProblemDetail handleConcurrentUpdate(ObjectOptimisticLockingFailureException e) {
+        return problem(HttpStatus.CONFLICT, CONCURRENT_UPDATE_DETAIL);
+    }
+
+    private static ProblemDetail problem(HttpStatus status, String detail) {
+        return ProblemDetail.forStatusAndDetail(status, detail);
     }
 }
