@@ -5,6 +5,8 @@ import java.time.Clock;
 import java.time.Instant;
 import java.util.Locale;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +21,10 @@ import com.example.wallet.repository.LedgerEntryRepository;
 @Service
 public class AccountService {
 
+    private static final Logger log = LoggerFactory.getLogger(AccountService.class);
+
+    static final String SAME_ACCOUNT_MESSAGE = "Cannot transfer to the same account";
+
     private final AccountRepository accounts;
     private final LedgerEntryRepository ledger;
     private final Clock clock;
@@ -31,6 +37,7 @@ public class AccountService {
 
     @Transactional
     public Account open(String ownerId, String currency) {
+        log.info("Opening {} account for owner {}", currency, ownerId);
         return accounts.save(new Account(ownerId, currency.toUpperCase(Locale.ROOT)));
     }
 
@@ -52,7 +59,7 @@ public class AccountService {
     public void transfer(Long fromAccountId, Long toAccountId, BigDecimal amount) {
         requirePositive(amount);
         if (fromAccountId.equals(toAccountId)) {
-            throw new InvalidRequestException("Cannot transfer to the same account");
+            throw new InvalidRequestException(SAME_ACCOUNT_MESSAGE);
         }
         Account from = load(fromAccountId);
         Account to = load(toAccountId);
