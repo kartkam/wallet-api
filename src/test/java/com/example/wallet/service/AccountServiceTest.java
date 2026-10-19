@@ -36,6 +36,16 @@ class AccountServiceTest {
     }
 
     @Test
+    void historyIsReturnedNewestFirst() {
+        Account account = service.open("alice", "USD");
+        service.deposit(account.getId(), BigDecimal.ONE);
+        service.deposit(account.getId(), BigDecimal.ONE);
+        service.deposit(account.getId(), BigDecimal.ONE);
+
+        assertThat(service.history(account.getId())).hasSize(3);
+    }
+
+    @Test
     void depositIncreasesBalanceAndWritesLedgerEntry() {
         Account account = service.open("alice", "USD");
 
