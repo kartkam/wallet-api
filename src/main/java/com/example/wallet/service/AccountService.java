@@ -3,6 +3,7 @@ package com.example.wallet.service;
 import java.math.BigDecimal;
 import java.time.Clock;
 import java.time.Instant;
+import java.util.List;
 import java.util.Locale;
 
 import org.springframework.stereotype.Service;
@@ -37,6 +38,13 @@ public class AccountService {
     @Transactional(readOnly = true)
     public Account get(Long accountId) {
         return load(accountId);
+    }
+
+    /** Returns the account's ledger entries, newest first. */
+    @Transactional(readOnly = true)
+    public List<LedgerEntry> history(Long accountId) {
+        load(accountId);
+        return ledger.findByAccountIdOrderByCreatedAtDesc(accountId);
     }
 
     @Transactional
