@@ -11,7 +11,7 @@ This repository is a sandbox for evaluating AI pull-request reviews with [Codzee
 | `POST` | `/accounts` | Open an account `{ "ownerId": "alice", "currency": "USD" }` |
 | `GET` | `/accounts/{id}` | Fetch an account and its balance |
 | `POST` | `/accounts/{id}/deposits` | Deposit funds `{ "amount": 25.50 }` |
-| `POST` | `/transfers` | Move funds between two accounts in the same currency `{ "fromAccountId": 1, "toAccountId": 2, "amount": 10.00 }` |
+| `POST` | `/transfers` | Move funds between two accounts in the same currency `{ "fromAccountId": 1, "toAccountId": 2, "amount": 10.00 }`. A fee of 0.5% (minimum 1.00) is charged to the sender on top of the amount and recorded in the ledger. |
 
 Errors are returned as RFC 9457 problem details: `404` unknown account, `400` invalid request, `409` insufficient funds or a concurrent update.
 
