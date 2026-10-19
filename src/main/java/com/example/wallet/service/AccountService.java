@@ -22,11 +22,14 @@ public class AccountService {
     private final AccountRepository accounts;
     private final LedgerEntryRepository ledger;
     private final Clock clock;
+    private final FeeCalculator feeCalculator;
 
-    public AccountService(AccountRepository accounts, LedgerEntryRepository ledger, Clock clock) {
+    public AccountService(AccountRepository accounts, LedgerEntryRepository ledger, Clock clock,
+            FeeCalculator feeCalculator) {
         this.accounts = accounts;
         this.ledger = ledger;
         this.clock = clock;
+        this.feeCalculator = feeCalculator;
     }
 
     @Transactional
@@ -60,7 +63,8 @@ public class AccountService {
             throw new InvalidRequestException("Currency mismatch between accounts");
         }
 
-        from.debit(amount);
+        BigDecimal fee = feeCalculator.feeFor(amount);
+        from.debit(amount.add(fee));
         to.credit(amount);
 
         Instant now = clock.instant();

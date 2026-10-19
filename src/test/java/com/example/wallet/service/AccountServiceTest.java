@@ -73,7 +73,8 @@ class AccountServiceTest {
 
         service.transfer(from.getId(), to.getId(), new BigDecimal("40.00"));
 
-        assertThat(service.get(from.getId()).getBalance()).isEqualByComparingTo("60.00");
+        // 40.00 transferred plus the 1.00 minimum fee
+        assertThat(service.get(from.getId()).getBalance()).isEqualByComparingTo("59.00");
         assertThat(service.get(to.getId()).getBalance()).isEqualByComparingTo("40.00");
         assertThat(ledger.findByAccountIdOrderByCreatedAtDesc(from.getId()))
                 .extracting(LedgerEntry::getType)
